@@ -137,6 +137,7 @@
 											</limits>
 											<excludes>
 												<exclude>com/antrip/config/*</exclude>
+												<exclude>com/antrip/auth_service/models/*</exclude>
 											</excludes>
 										</rule>
 									</rules>
