@@ -30,8 +30,26 @@
 		<java.version>21</java.version>
 		<testcontainers.version>1.21.1</testcontainers.version>
 		<lombok.version>1.18.38</lombok.version>
+		<jsonwebtoken.version>0.12.6</jsonwebtoken.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jsonwebtoken.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jsonwebtoken.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jsonwebtoken.version}</version>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
@@ -136,8 +154,9 @@
 												</limit>
 											</limits>
 											<excludes>
-												<exclude>com/antrip/config/*</exclude>
+												<exclude>com/antrip/auth_service/configs/*</exclude>
 												<exclude>com/antrip/auth_service/models/*</exclude>
+												<exclude>com/antrip/auth_service/exceptions/*</exclude>
 											</excludes>
 										</rule>
 									</rules>
