@@ -37,4 +37,4 @@ jobs:
           distribution: 'temurin'
 
       - name: Run unit tests
-        run: mvn clean compile test -Pcodecoverage
+        run: mvn clean install -Pcodecoverage
