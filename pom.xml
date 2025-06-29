@@ -136,6 +136,11 @@
 								<goals>
 									<goal>report</goal>
 								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/AuthServiceApplication.class</exclude>
+									</excludes>
+								</configuration>
 							</execution>
 							<execution>
 								<id>check</id>
@@ -154,9 +159,7 @@
 												</limit>
 											</limits>
 											<excludes>
-												<exclude>com/antrip/auth_service/configs/*</exclude>
-												<exclude>com/antrip/auth_service/models/*</exclude>
-												<exclude>com/antrip/auth_service/exceptions/*</exclude>
+												<exclude>**/AuthServiceApplication.class</exclude>
 											</excludes>
 										</rule>
 									</rules>
