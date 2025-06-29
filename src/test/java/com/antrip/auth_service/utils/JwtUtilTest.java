@@ -1,5 +1,6 @@
 package com.antrip.auth_service.utils;
 
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +19,7 @@ class JwtUtilTest {
     @BeforeEach
     void setUp() {
         jwtUtil = new JwtUtil();
-        SecretKey key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
+        SecretKey key = Jwts.SIG.HS256.key().build();
         String secret = Base64.getEncoder().encodeToString(key.getEncoded());
         long expirationMs = 1000 * 60 * 60;
 
