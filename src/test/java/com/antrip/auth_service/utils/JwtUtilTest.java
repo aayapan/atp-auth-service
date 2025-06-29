@@ -38,4 +38,13 @@ class JwtUtilTest {
         String extractedUsername = jwtUtil.extractUsername(token);
         assertEquals(username, extractedUsername);
     }
+
+    @Test
+    @DisplayName("Should validate token with correct username")
+    void testValidateToken_Valid() {
+        String username = "testuser";
+        String token = jwtUtil.generateToken(username);
+
+        assertTrue(jwtUtil.validateToken(token, username));
+    }
 }
