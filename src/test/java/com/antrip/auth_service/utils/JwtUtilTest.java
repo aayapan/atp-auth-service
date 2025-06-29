@@ -47,4 +47,13 @@ class JwtUtilTest {
 
         assertTrue(jwtUtil.validateToken(token, username));
     }
+
+    @Test
+    @DisplayName("Should not validate token with incorrect username")
+    void testValidateToken_InvalidUsername() {
+        String username = "testuser";
+        String token = jwtUtil.generateToken(username);
+
+        assertFalse(jwtUtil.validateToken(token, "otheruser"));
+    }
 }
