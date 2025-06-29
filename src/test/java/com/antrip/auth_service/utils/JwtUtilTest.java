@@ -56,4 +56,14 @@ class JwtUtilTest {
 
         assertFalse(jwtUtil.validateToken(token, "otheruser"));
     }
+
+    @Test
+    @DisplayName("Should not validate expired token")
+    void testValidateToken_Expired() throws InterruptedException {
+        ReflectionTestUtils.setField(jwtUtil, "jwtExpirationMs", 1L);
+        String token = jwtUtil.generateToken("testuser");
+        Thread.sleep(5);
+
+        assertFalse(jwtUtil.validateToken(token, "testuser"));
+    }
 }
