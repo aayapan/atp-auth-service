@@ -1,7 +1,6 @@
 package com.antrip.auth_service.utils;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
