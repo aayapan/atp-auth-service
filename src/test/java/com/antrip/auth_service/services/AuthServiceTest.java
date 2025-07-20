@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthServiceTests {
+class AuthServiceTest {
 
     @InjectMocks
     AuthServiceImpl authService;
@@ -76,5 +77,40 @@ public class AuthServiceTests {
         );
 
         verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should return JWT token on successful login")
+    void testLogin_ReturnsJwtToken() {
+        String email = "user@example.com";
+        String password = "password";
+        String jwt = "jwt.token";
+
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(email, password);
+
+        when(authenticationManager.authenticate(any())).thenReturn(authToken);
+        when(jwtUtil.generateToken(email)).thenReturn(jwt);
+
+        String result = authService.login(email, password);
+
+        assertEquals(jwt, result);
+        verify(authenticationManager).authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+        );
+        verify(jwtUtil).generateToken(email);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when authentication fails")
+    void testLogin_AuthenticationFails() {
+        String email = "test@example.com";
+        String password = "wrongpassword";
+
+        when(authenticationManager.authenticate(any()))
+                .thenThrow(new RuntimeException("Bad credentials"));
+
+        assertThrows(RuntimeException.class, () -> authService.login(email, password));
+        verify(jwtUtil, never()).generateToken(any());
     }
 }
