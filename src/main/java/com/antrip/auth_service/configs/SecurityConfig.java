@@ -1,6 +1,7 @@
 package com.antrip.auth_service.configs;
 
-import com.antrip.auth_service.services.CustomUserDetailsService;
+import com.antrip.auth_service.security.CustomUserDetailsService;
+import com.antrip.auth_service.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
