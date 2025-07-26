@@ -1,18 +1,19 @@
 package com.antrip.auth_service.models;
 
+import com.antrip.auth_service.exceptions.InvalidRegisterRequestException;
 import io.micrometer.common.util.StringUtils;
 
 public record RegisterRequest(String displayName, String email, String password) {
 
     public RegisterRequest {
         if (StringUtils.isBlank(displayName)) {
-            throw new IllegalArgumentException("Display name cannot be null or blank");
+            throw new InvalidRegisterRequestException("Display name cannot be null or blank", "displayName");
         }
         if (StringUtils.isBlank(email)) {
-            throw new IllegalArgumentException("Email cannot be null or blank");
+            throw new InvalidRegisterRequestException("Email cannot be null or blank", "email");
         }
         if (StringUtils.isBlank(password)) {
-            throw new IllegalArgumentException("Password cannot be null or blank");
+            throw new InvalidRegisterRequestException("Password cannot be null or blank", "password");
         }
     }
 }
