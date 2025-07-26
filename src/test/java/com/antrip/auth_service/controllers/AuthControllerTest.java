@@ -2,6 +2,8 @@ package com.antrip.auth_service.controllers;
 
 import com.antrip.auth_service.configs.SecurityConfig;
 import com.antrip.auth_service.exceptions.InvalidRegisterRequestException;
+import com.antrip.auth_service.exceptions.UserAlreadyExistsException;
+import com.antrip.auth_service.models.ErrorResponse;
 import com.antrip.auth_service.models.RegisterRequest;
 import com.antrip.auth_service.models.UserRepository;
 import com.antrip.auth_service.security.CustomUserDetailsService;
@@ -74,6 +76,32 @@ public class AuthControllerTest {
                 registerRequest.email(),
                 registerRequest.password()
         );
+    }
+
+    @Test
+    @DisplayName("Should throw UserAlreadyExistsException if user already exists")
+    @SneakyThrows
+    void register_userAlreadyExists() {
+        RegisterRequest registerRequest = new RegisterRequest("Test User", "test@example.com", "password123");
+        ErrorResponse expectedError = new ErrorResponse("User with email " + registerRequest.email() + " already exists", null);
+
+        doThrow(new UserAlreadyExistsException(expectedError.message()))
+                .when(authService).register(registerRequest.displayName(), registerRequest.email(), registerRequest.password());
+
+        mockMvc.perform(post("/auth/register")
+                        .content(objectMapper.writeValueAsString(registerRequest))
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                )
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value(expectedError.message()))
+                .andExpect(jsonPath("$.field").isEmpty());
+
+        verify(authService, times(1)).register(
+                registerRequest.displayName(),
+                registerRequest.email(),
+                registerRequest.password()
+        );
+        verify(authService, never()).login(registerRequest.email(), registerRequest.password());
     }
 
     @ParameterizedTest
