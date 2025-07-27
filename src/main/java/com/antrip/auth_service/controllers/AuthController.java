@@ -1,6 +1,7 @@
 package com.antrip.auth_service.controllers;
 
 import com.antrip.auth_service.models.AuthResponse;
+import com.antrip.auth_service.models.LoginRequest;
 import com.antrip.auth_service.models.RegisterRequest;
 import com.antrip.auth_service.services.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,11 @@ public class AuthController {
         authService.register(request.displayName(), request.email(), request.password());
         String token = authService.login(request.email(), request.password());
         return new ResponseEntity<>(new AuthResponse(token), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        String token = authService.login(request.email(), request.password());
+        return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
     }
 }
