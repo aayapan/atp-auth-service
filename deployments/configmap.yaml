@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-cm
+  namespace: default
+data:
+  DB_URL: jdbc:postgresql://auth-service-db-svc:5432/auth-service-db
+  DB_DRIVER: org.postgresql.Driver
+  DB_DDL_AUTO: validate
+  DB_SHOW_SQL: "true"
+  DB_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+  JWT_EXPIRATION: "86400000"
