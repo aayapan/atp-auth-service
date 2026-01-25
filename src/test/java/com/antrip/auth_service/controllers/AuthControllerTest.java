@@ -209,8 +209,8 @@ public class AuthControllerTest {
     @DisplayName("Should return 200 OK for a valid token")
     @SneakyThrows
     void validateToken_Success() {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
         String username = "sample@email.com";
+        String token = "randomToken";
         doNothing().when(authService).validateToken(token, username);
 
         mockMvc.perform(get("/auth/validate")
@@ -225,8 +225,8 @@ public class AuthControllerTest {
     @DisplayName("Should return 401 Unauthorized for an invalid token")
     @SneakyThrows
     void validateToken_Invalid() {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
         String username = "sample@email.com";
+        String token = "randomToken";
         doThrow(new InvalidTokenException("Invalid token")).when(authService).validateToken(token, username);
 
         mockMvc.perform(get("/auth/validate")
