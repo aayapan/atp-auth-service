@@ -1,8 +1,10 @@
 package com.antrip.auth_service.services;
 
+import com.antrip.auth_service.exceptions.InvalidTokenException;
 import com.antrip.auth_service.exceptions.UserAlreadyExistsException;
 import com.antrip.auth_service.models.User;
-import com.antrip.auth_service.models.UserRepository;
+import com.antrip.auth_service.repositories.UserRepository;
+import com.antrip.auth_service.security.CustomUserDetailsService;
 import com.antrip.auth_service.utils.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -45,5 +48,12 @@ public class AuthServiceImpl implements AuthService{
     public String login(String email, String password) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         return jwtUtil.generateToken(authentication.getName());
+    }
+
+    @Override
+    public void validateToken(String token, String username) {
+        if (!jwtUtil.validateToken(token,username)) {
+            throw new InvalidTokenException("Invalid or expired token");
+        }
     }
 }

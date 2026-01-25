@@ -1,7 +1,7 @@
 package com.antrip.auth_service.security;
 
 import com.antrip.auth_service.models.User;
-import com.antrip.auth_service.models.UserRepository;
+import com.antrip.auth_service.repositories.UserRepository;
 import com.antrip.auth_service.utils.JwtUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -27,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("Processing authentication for request: " + request.getRequestURI());
+        log.debug("Processing authentication for request: {}", request.getRequestURI());
         String authorizationHeader = request.getHeader("Authorization");
         if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
@@ -51,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getServletPath();
+        String path = request.getRequestURI();
         return path.startsWith("/auth/");
     }
 }

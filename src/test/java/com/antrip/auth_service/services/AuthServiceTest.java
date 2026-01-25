@@ -1,8 +1,9 @@
 package com.antrip.auth_service.services;
 
+import com.antrip.auth_service.exceptions.InvalidTokenException;
 import com.antrip.auth_service.exceptions.UserAlreadyExistsException;
 import com.antrip.auth_service.models.User;
-import com.antrip.auth_service.models.UserRepository;
+import com.antrip.auth_service.repositories.UserRepository;
 import com.antrip.auth_service.utils.JwtUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -112,5 +113,29 @@ class AuthServiceTest {
 
         assertThrows(RuntimeException.class, () -> authService.login(email, password));
         verify(jwtUtil, never()).generateToken(any());
+    }
+
+    @Test
+    @DisplayName("Should validate a token successfully when valid")
+    void testValidateToken_validToken() {
+        String token = "valid.jwt.token";
+        String username = "test@example.com";
+
+        when(jwtUtil.validateToken(token, username)).thenReturn(true);
+
+        assertDoesNotThrow(() -> authService.validateToken(token, username));
+        verify(jwtUtil).validateToken(token, username);
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidTokenException when token is invalid")
+    void testValidateToken_invalidToken() {
+        String token = "invalid.jwt.token";
+        String username = "test@example.com";
+
+        when(jwtUtil.validateToken(token, username)).thenReturn(false);
+
+        assertThrows(InvalidTokenException.class, () -> authService.validateToken(token, username));
+        verify(jwtUtil).validateToken(token, username);
     }
 }

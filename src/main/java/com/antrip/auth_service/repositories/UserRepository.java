@@ -1,5 +1,6 @@
-package com.antrip.auth_service.models;
+package com.antrip.auth_service.repositories;
 
+import com.antrip.auth_service.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

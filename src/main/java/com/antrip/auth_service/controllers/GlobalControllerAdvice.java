@@ -1,6 +1,7 @@
 package com.antrip.auth_service.controllers;
 
 import com.antrip.auth_service.exceptions.InvalidAuthRequestException;
+import com.antrip.auth_service.exceptions.InvalidTokenException;
 import com.antrip.auth_service.exceptions.UserAlreadyExistsException;
 import com.antrip.auth_service.models.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,12 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidToken(InvalidTokenException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
