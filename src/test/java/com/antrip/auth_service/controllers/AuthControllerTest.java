@@ -2,11 +2,12 @@ package com.antrip.auth_service.controllers;
 
 import com.antrip.auth_service.configs.SecurityConfig;
 import com.antrip.auth_service.exceptions.InvalidAuthRequestException;
+import com.antrip.auth_service.exceptions.InvalidTokenException;
 import com.antrip.auth_service.exceptions.UserAlreadyExistsException;
 import com.antrip.auth_service.models.ErrorResponse;
 import com.antrip.auth_service.models.LoginRequest;
 import com.antrip.auth_service.models.RegisterRequest;
-import com.antrip.auth_service.models.UserRepository;
+import com.antrip.auth_service.repositories.UserRepository;
 import com.antrip.auth_service.security.CustomUserDetailsService;
 import com.antrip.auth_service.services.AuthService;
 import com.antrip.auth_service.utils.JwtUtil;
@@ -26,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -201,5 +203,37 @@ public class AuthControllerTest {
                 () -> new LoginRequest("test@example.com", invalidPassword)
         );
         assertEquals("Password cannot be null or blank", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should return 200 OK for a valid token")
+    @SneakyThrows
+    void validateToken_Success() {
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String username = "sample@email.com";
+        doNothing().when(authService).validateToken(token, username);
+
+        mockMvc.perform(get("/auth/validate")
+                        .header("Authorization", "Bearer " + token)
+                        .header("username", username))
+                .andExpect(status().isOk());
+
+        verify(authService, times(1)).validateToken(token, username);
+    }
+
+    @Test
+    @DisplayName("Should return 401 Unauthorized for an invalid token")
+    @SneakyThrows
+    void validateToken_Invalid() {
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String username = "sample@email.com";
+        doThrow(new InvalidTokenException("Invalid token")).when(authService).validateToken(token, username);
+
+        mockMvc.perform(get("/auth/validate")
+                        .header("Authorization", "Bearer " + token)
+                        .header("username", username))
+                .andExpect(status().isUnauthorized());
+
+        verify(authService, times(1)).validateToken(token, username);
     }
 }
