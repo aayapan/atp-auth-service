@@ -1,7 +1,7 @@
 package com.antrip.auth_service.security;
 
 import com.antrip.auth_service.models.User;
-import com.antrip.auth_service.models.UserRepository;
+import com.antrip.auth_service.repositories.UserRepository;
 import com.antrip.auth_service.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
