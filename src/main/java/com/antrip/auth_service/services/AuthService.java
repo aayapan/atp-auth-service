@@ -5,4 +5,7 @@ public interface AuthService {
     void register(String displayName, String email, String password);
 
     String login(String email, String password);
+
+    void validateToken(String token, String username);
+
 }
