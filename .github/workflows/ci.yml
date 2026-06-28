@@ -22,5 +22,8 @@ jobs:
       - name: Verify Docker is available (for Testcontainers)
         run: docker --version
 
+      - name: Ensure Maven wrapper is executable
+        run: chmod +x ./mvnw
+
       - name: Build and run tests with coverage profile
         run: ./mvnw -B clean verify -Pcodecoverage
